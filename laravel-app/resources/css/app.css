@@ -1,0 +1,547 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Custom Black & White Theme */
+:root {
+    --primary-black: #1a1a1a;
+    --secondary-black: #2d2d2d;
+    --accent-black: #404040;
+    --light-gray: #f8f9fa;
+    --medium-gray: #e9ecef;
+    --dark-gray: #6c757d;
+    --text-primary: #212529;
+    --text-secondary: #495057;
+    --text-muted: #6c757d;
+    --border-color: #dee2e6;
+    --shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    --shadow-lg: 0 4px 6px rgba(0, 0, 0, 0.15);
+}
+
+/* Base Styles */
+body {
+    background-color: var(--light-gray);
+    color: var(--text-primary);
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+/* Card Components */
+.card {
+    background: white;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    box-shadow: var(--shadow);
+    transition: all 0.2s ease;
+}
+
+.card:hover {
+    box-shadow: var(--shadow-lg);
+    transform: translateY(-1px);
+}
+
+/* Button Styles */
+.btn-primary {
+    background-color: var(--primary-black);
+    color: white;
+    border: 1px solid var(--primary-black);
+    padding: 0.5rem 1rem;
+    border-radius: 6px;
+    font-weight: 500;
+    transition: all 0.2s ease;
+}
+
+.btn-primary:hover {
+    background-color: var(--secondary-black);
+    border-color: var(--secondary-black);
+    transform: translateY(-1px);
+    box-shadow: var(--shadow);
+}
+
+.btn-secondary {
+    background-color: white;
+    color: var(--text-primary);
+    border: 1px solid var(--border-color);
+    padding: 0.5rem 1rem;
+    border-radius: 6px;
+    font-weight: 500;
+    transition: all 0.2s ease;
+}
+
+.btn-secondary:hover {
+    background-color: var(--medium-gray);
+    border-color: var(--accent-black);
+}
+
+/* Status Badges */
+.status-badge {
+    padding: 0.25rem 0.75rem;
+    border-radius: 9999px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.status-admin {
+    background-color: #fee2e2;
+    color: #dc2626;
+    border: 1px solid #fecaca;
+}
+
+.status-developer {
+    background-color: #dbeafe;
+    color: #2563eb;
+    border: 1px solid #bfdbfe;
+}
+
+.status-investor {
+    background-color: #dcfce7;
+    color: #16a34a;
+    border: 1px solid #bbf7d0;
+}
+
+.status-bd {
+    background-color: #f3e8ff;
+    color: #9333ea;
+    border: 1px solid #e9d5ff;
+}
+
+.status-pending {
+    background-color: #fef3c7;
+    color: #d97706;
+    border: 1px solid #fde68a;
+}
+
+.status-approved {
+    background-color: #dcfce7;
+    color: #16a34a;
+    border: 1px solid #bbf7d0;
+}
+
+.status-rejected {
+    background-color: #fee2e2;
+    color: #dc2626;
+    border: 1px solid #fecaca;
+}
+
+.status-completed {
+    background-color: #dcfce7;
+    color: #16a34a;
+    border: 1px solid #bbf7d0;
+}
+
+.status-in-progress {
+    background-color: #dbeafe;
+    color: #2563eb;
+    border: 1px solid #bfdbfe;
+}
+
+.status-planning {
+    background-color: #f3f4f6;
+    color: #374151;
+    border: 1px solid #d1d5db;
+}
+
+/* Table Styles */
+.table-container {
+    background: white;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: var(--shadow);
+    width: 100%;
+    max-width: 100%;
+}
+
+.table-header {
+    background-color: var(--secondary-black);
+    color: white;
+}
+
+.table-header th {
+    color: white !important;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    font-size: 0.75rem;
+}
+
+.table-row {
+    border-bottom: 1px solid var(--border-color);
+    transition: background-color 0.2s ease;
+}
+
+.table-row:hover {
+    background-color: var(--light-gray);
+}
+
+.table-row:nth-child(even) {
+    background-color: #fafafa;
+}
+
+/* Form Styles */
+.form-input {
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    padding: 0.75rem;
+    background-color: white;
+    color: var(--text-primary);
+    transition: all 0.2s ease;
+}
+
+.form-input:focus {
+    outline: none;
+    border-color: var(--primary-black);
+    box-shadow: 0 0 0 3px rgba(26, 26, 26, 0.1);
+}
+
+.form-label {
+    color: var(--text-primary);
+    font-weight: 500;
+    margin-bottom: 0.5rem;
+    display: block;
+}
+
+/* Dashboard Cards */
+.dashboard-card {
+    background: white;
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    padding: 1.5rem;
+    box-shadow: var(--shadow);
+    transition: all 0.3s ease;
+}
+
+.dashboard-card:hover {
+    box-shadow: var(--shadow-lg);
+    transform: translateY(-2px);
+}
+
+.dashboard-stat {
+    text-align: center;
+    padding: 1rem;
+    border-radius: 8px;
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    border: 1px solid var(--border-color);
+}
+
+.dashboard-stat-value {
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--primary-black);
+    margin-bottom: 0.25rem;
+}
+
+.dashboard-stat-label {
+    font-size: 0.875rem;
+    color: var(--text-secondary);
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+/* Navigation */
+.nav-link {
+    color: var(--text-secondary);
+    text-decoration: none;
+    padding: 0.5rem 1rem;
+    border-radius: 6px;
+    transition: all 0.2s ease;
+    font-weight: 500;
+}
+
+.nav-link:hover {
+    color: var(--primary-black);
+    background-color: var(--medium-gray);
+}
+
+.nav-link.active {
+    color: var(--primary-black);
+    background-color: var(--light-gray);
+    font-weight: 600;
+}
+
+/* Alert Styles */
+.alert {
+    padding: 1rem;
+    border-radius: 6px;
+    margin-bottom: 1rem;
+    border: 1px solid;
+}
+
+.alert-success {
+    background-color: #f0f9ff;
+    border-color: #0ea5e9;
+    color: #0c4a6e;
+}
+
+.alert-error {
+    background-color: #fef2f2;
+    border-color: #f87171;
+    color: #991b1b;
+}
+
+.alert-warning {
+    background-color: #fffbeb;
+    border-color: #fbbf24;
+    color: #92400e;
+}
+
+/* Utility Classes */
+.text-primary {
+    color: var(--text-primary) !important;
+}
+
+.text-secondary {
+    color: var(--text-secondary) !important;
+}
+
+.text-muted {
+    color: var(--text-muted) !important;
+}
+
+.bg-primary {
+    background-color: var(--primary-black) !important;
+}
+
+.bg-secondary {
+    background-color: var(--secondary-black) !important;
+}
+
+.border-primary {
+    border-color: var(--primary-black) !important;
+}
+
+/* Profit share status badges */
+.status-paid {
+    background-color: #dcfce7;
+    color: #16a34a;
+    border: 1px solid #bbf7d0;
+}
+
+/* Payment type badges */
+.status-investment {
+    background-color: #dbeafe;
+    color: #2563eb;
+    border: 1px solid #bfdbfe;
+}
+
+.status-reimbursement {
+    background-color: #fef3c7;
+    color: #d97706;
+    border: 1px solid #fed7aa;
+}
+
+.status-profit-share {
+    background-color: #f3e8ff;
+    color: #9333ea;
+    border: 1px solid #e9d5ff;
+}
+
+.status-other {
+    background-color: #f3f4f6;
+    color: #6b7280;
+    border: 1px solid #d1d5db;
+}
+
+.status-expense-reimbursement {
+    background-color: #fef3c7;
+    color: #d97706;
+    border: 1px solid #fed7aa;
+}
+
+/* Fund purpose badges */
+.status-salaries {
+    background-color: #dbeafe;
+    color: #2563eb;
+    border: 1px solid #bfdbfe;
+}
+
+.status-upwork-connects {
+    background-color: #fef3c7;
+    color: #d97706;
+    border: 1px solid #fed7aa;
+}
+
+.status-project-expenses {
+    background-color: #dcfce7;
+    color: #16a34a;
+    border: 1px solid #bbf7d0;
+}
+
+.status-office-rent {
+    background-color: #f3e8ff;
+    color: #9333ea;
+    border: 1px solid #e9d5ff;
+}
+
+.status-equipment {
+    background-color: #fce7f3;
+    color: #be185d;
+    border: 1px solid #fbcfe8;
+}
+
+.status-marketing {
+    background-color: #fef2f2;
+    color: #dc2626;
+    border: 1px solid #fecaca;
+}
+
+/* Lead status badges */
+.status-new {
+    background-color: #dbeafe;
+    color: #2563eb;
+    border: 1px solid #bfdbfe;
+}
+
+.status-contacted {
+    background-color: #fef3c7;
+    color: #d97706;
+    border: 1px solid #fed7aa;
+}
+
+.status-qualified {
+    background-color: #dcfce7;
+    color: #16a34a;
+    border: 1px solid #bbf7d0;
+}
+
+.status-proposal-sent {
+    background-color: #f3e8ff;
+    color: #9333ea;
+    border: 1px solid #e9d5ff;
+}
+
+.status-negotiating {
+    background-color: #fce7f3;
+    color: #be185d;
+    border: 1px solid #fbcfe8;
+}
+
+.status-closed-won {
+    background-color: #dcfce7;
+    color: #16a34a;
+    border: 1px solid #bbf7d0;
+}
+
+.status-closed-lost {
+    background-color: #fef2f2;
+    color: #dc2626;
+    border: 1px solid #fecaca;
+}
+
+/* Bidding status badges */
+.status-researching {
+    background-color: #f3f4f6;
+    color: #6b7280;
+    border: 1px solid #d1d5db;
+}
+
+.status-ready-to-bid {
+    background-color: #dbeafe;
+    color: #2563eb;
+    border: 1px solid #bfdbfe;
+}
+
+.status-bid-sent {
+    background-color: #fef3c7;
+    color: #d97706;
+    border: 1px solid #fed7aa;
+}
+
+.status-interviewing {
+    background-color: #f3e8ff;
+    color: #9333ea;
+    border: 1px solid #e9d5ff;
+}
+
+.status-negotiating {
+    background-color: #fce7f3;
+    color: #be185d;
+    border: 1px solid #fbcfe8;
+}
+
+.status-won {
+    background-color: #dcfce7;
+    color: #16a34a;
+    border: 1px solid #bbf7d0;
+}
+
+.status-lost {
+    background-color: #fef2f2;
+    color: #dc2626;
+    border: 1px solid #fecaca;
+}
+
+.status-withdrawn {
+    background-color: #f3f4f6;
+    color: #6b7280;
+    border: 1px solid #d1d5db;
+}
+
+/* Responsive Design */
+@media (max-width: 1024px) {
+    .table-container {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+}
+
+@media (max-width: 768px) {
+    .dashboard-card {
+        padding: 1rem;
+    }
+
+    .dashboard-stat-value {
+        font-size: 1.5rem;
+    }
+
+    .table-container {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    /* Make action buttons more compact */
+    .table-row td:last-child .flex {
+        flex-direction: column;
+        gap: 0.25rem;
+        min-width: 80px;
+    }
+
+    .table-row td:last-child .flex a,
+    .table-row td:last-child .flex button {
+        font-size: 0.7rem;
+        padding: 0.2rem 0.4rem;
+        white-space: nowrap;
+    }
+}
+
+@media (max-width: 640px) {
+
+    /* Hide less important columns on very small screens */
+    .table-container table th:nth-child(4),
+    .table-container table td:nth-child(4),
+    .table-container table th:nth-child(5),
+    .table-container table td:nth-child(5),
+    .table-container table th:nth-child(6),
+    .table-container table td:nth-child(6) {
+        display: none;
+    }
+
+    /* Make table more compact on small screens */
+    .table-container table {
+        font-size: 0.875rem;
+    }
+}
+
+@media (max-width: 480px) {
+
+    /* Hide more columns on very small screens */
+    .table-container table th:nth-child(3),
+    .table-container table td:nth-child(3) {
+        display: none;
+    }
+
+    .table-container table {
+        font-size: 0.8rem;
+    }
+}

@@ -6,37 +6,87 @@ class Payment extends Model
 
     public function getAll()
     {
-        $sql = "SELECT p.*, u.name as user_name 
+        $sql = "SELECT p.*, 
+                       i.name as investor_name, 
+                       r.name as recipient_name 
                 FROM payments p 
-                LEFT JOIN users u ON p.user_id = u.id 
+                LEFT JOIN users i ON p.investor_id = i.id 
+                LEFT JOIN users r ON p.recipient_id = r.id 
+                ORDER BY p.payment_date DESC, p.created_at DESC";
+        return $this->db->fetchAll($sql);
+    }
+    
+    public function getAllWithRelations()
+    {
+        $sql = "SELECT p.*, 
+                       i.name as investor_name, 
+                       r.name as recipient_name 
+                FROM payments p 
+                LEFT JOIN users i ON p.investor_id = i.id 
+                LEFT JOIN users r ON p.recipient_id = r.id 
                 ORDER BY p.payment_date DESC, p.created_at DESC";
         return $this->db->fetchAll($sql);
     }
 
     public function find($id)
     {
-        $sql = "SELECT p.*, u.name as user_name 
+        $sql = "SELECT p.*, 
+                       i.name as investor_name, 
+                       r.name as recipient_name 
                 FROM payments p 
-                LEFT JOIN users u ON p.user_id = u.id 
+                LEFT JOIN users i ON p.investor_id = i.id 
+                LEFT JOIN users r ON p.recipient_id = r.id 
                 WHERE p.id = ?";
         return $this->db->fetch($sql, [$id]);
     }
 
     public function getByUserId($userId)
     {
-        $sql = "SELECT p.*, u.name as user_name 
+        $sql = "SELECT p.*, 
+                       i.name as investor_name, 
+                       r.name as recipient_name 
                 FROM payments p 
-                LEFT JOIN users u ON p.user_id = u.id 
-                WHERE p.user_id = ? 
+                LEFT JOIN users i ON p.investor_id = i.id 
+                LEFT JOIN users r ON p.recipient_id = r.id 
+                WHERE p.investor_id = ? OR p.recipient_id = ? 
                 ORDER BY p.payment_date DESC, p.created_at DESC";
-        return $this->db->fetchAll($sql, [$userId]);
+        return $this->db->fetchAll($sql, [$userId, $userId]);
+    }
+
+    public function getByInvestorId($investorId)
+    {
+        $sql = "SELECT p.*, 
+                       i.name as investor_name, 
+                       r.name as recipient_name 
+                FROM payments p 
+                LEFT JOIN users i ON p.investor_id = i.id 
+                LEFT JOIN users r ON p.recipient_id = r.id 
+                WHERE p.investor_id = ? 
+                ORDER BY p.payment_date DESC, p.created_at DESC";
+        return $this->db->fetchAll($sql, [$investorId]);
+    }
+
+    public function getByRecipientId($recipientId)
+    {
+        $sql = "SELECT p.*, 
+                       i.name as investor_name, 
+                       r.name as recipient_name 
+                FROM payments p 
+                LEFT JOIN users i ON p.investor_id = i.id 
+                LEFT JOIN users r ON p.recipient_id = r.id 
+                WHERE p.recipient_id = ? 
+                ORDER BY p.payment_date DESC, p.created_at DESC";
+        return $this->db->fetchAll($sql, [$recipientId]);
     }
 
     public function getByStatus($status)
     {
-        $sql = "SELECT p.*, u.name as user_name 
+        $sql = "SELECT p.*, 
+                       i.name as investor_name, 
+                       r.name as recipient_name 
                 FROM payments p 
-                LEFT JOIN users u ON p.user_id = u.id 
+                LEFT JOIN users i ON p.investor_id = i.id 
+                LEFT JOIN users r ON p.recipient_id = r.id 
                 WHERE p.status = ? 
                 ORDER BY p.payment_date DESC, p.created_at DESC";
         return $this->db->fetchAll($sql, [$status]);
@@ -44,9 +94,12 @@ class Payment extends Model
 
     public function getByPaymentType($paymentType)
     {
-        $sql = "SELECT p.*, u.name as user_name 
+        $sql = "SELECT p.*, 
+                       i.name as investor_name, 
+                       r.name as recipient_name 
                 FROM payments p 
-                LEFT JOIN users u ON p.user_id = u.id 
+                LEFT JOIN users i ON p.investor_id = i.id 
+                LEFT JOIN users r ON p.recipient_id = r.id 
                 WHERE p.payment_type = ? 
                 ORDER BY p.payment_date DESC, p.created_at DESC";
         return $this->db->fetchAll($sql, [$paymentType]);
@@ -64,7 +117,8 @@ class Payment extends Model
         $params = [$paymentType];
         
         if ($userId) {
-            $sql .= " AND user_id = ?";
+            $sql .= " AND (investor_id = ? OR recipient_id = ?)";
+            $params[] = $userId;
             $params[] = $userId;
         }
         
@@ -83,7 +137,8 @@ class Payment extends Model
         $params = [$status];
         
         if ($userId) {
-            $sql .= " AND user_id = ?";
+            $sql .= " AND (investor_id = ? OR recipient_id = ?)";
+            $params[] = $userId;
             $params[] = $userId;
         }
         
@@ -93,8 +148,8 @@ class Payment extends Model
 
     public function getTotalPaymentsForUser($userId, $startDate = null, $endDate = null)
     {
-        $sql = "SELECT SUM(amount) as total FROM payments WHERE user_id = ? AND status = 'completed'";
-        $params = [$userId];
+        $sql = "SELECT SUM(amount) as total FROM payments WHERE (investor_id = ? OR recipient_id = ?) AND status = 'completed'";
+        $params = [$userId, $userId];
         
         if ($startDate && $endDate) {
             $sql .= " AND payment_date >= ? AND payment_date <= ?";

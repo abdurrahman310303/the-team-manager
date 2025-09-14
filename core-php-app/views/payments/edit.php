@@ -433,5 +433,5 @@ if (document.getElementById('receipt_image')) {
 
 <?php
 $content = ob_get_clean();
-require_once __DIR__ . '/../layout.php';
+require_once __DIR__ . '/../admin_layout.php';
 ?>

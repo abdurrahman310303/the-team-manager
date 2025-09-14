@@ -36,6 +36,15 @@ require_once __DIR__ . '/controllers/RoleController.php';
 // Initialize session
 Session::start();
 
+// Handle PHP built-in server routing
+$requestUri = $_SERVER['REQUEST_URI'];
+$path = parse_url($requestUri, PHP_URL_PATH);
+
+// For built-in server, handle static files
+if ($path !== '/' && file_exists(__DIR__ . $path)) {
+    return false; // Let server handle static files
+}
+
 // Initialize router
 $router = new Router();
 

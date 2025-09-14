@@ -3,93 +3,92 @@ $title = 'Daily Reports - Team Manager';
 ob_start();
 ?>
 
-<div class="px-4 py-6 sm:px-0">
-    <div class="sm:flex sm:items-center">
-        <div class="sm:flex-auto">
-            <h1 class="text-2xl font-semibold text-gray-900">Daily Reports</h1>
-            <p class="mt-2 text-sm text-gray-700">Track daily work progress and activities.</p>
-        </div>
-        <div class="mt-4 sm:mt-0 sm:ml-16 sm:flex-none">
-            <a href="/daily-reports/create" 
-                class="inline-flex items-center justify-center rounded-md border border-transparent bg-indigo-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 sm:w-auto">
-                Add Report
-            </a>
-        </div>
+<div class="page-header">
+    <div>
+        <h1 class="page-title">Daily Reports</h1>
+        <p class="page-subtitle">Track daily work progress and activities</p>
     </div>
+    <div class="page-actions">
+        <?php if (Auth::hasAnyRole(['admin', 'bd', 'developer'])): ?>
+        <a href="/daily-reports/create" class="btn btn-primary">
+            Add Report
+        </a>
+        <?php endif; ?>
+    </div>
+</div>
 
-    <div class="mt-8 flex flex-col">
-        <div class="-my-2 -mx-4 overflow-x-auto sm:-mx-6 lg:-mx-8">
-            <div class="inline-block min-w-full py-2 align-middle md:px-6 lg:px-8">
-                <div class="overflow-hidden shadow ring-1 ring-black ring-opacity-5 md:rounded-lg">
-                    <table class="min-w-full divide-y divide-gray-300">
-                        <thead class="bg-gray-50">
-                            <tr>
-                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
-                                <?php if (isset($user) && $user['role_name'] === 'admin'): ?>
-                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Employee</th>
-                                <?php endif; ?>
-                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Work Done</th>
-                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Hours</th>
-                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Challenges</th>
-                                <th scope="col" class="relative px-6 py-3"><span class="sr-only">Actions</span></th>
-                            </tr>
-                        </thead>
-                        <tbody class="bg-white divide-y divide-gray-200">
-                            <?php if (empty($reports)): ?>
-                            <tr>
-                                <td colspan="<?= isset($user) && $user['role_name'] === 'admin' ? '6' : '5' ?>" class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 text-center">
-                                    No daily reports found.
-                                </td>
-                            </tr>
-                            <?php else: ?>
-                            <?php foreach ($reports as $report): ?>
-                            <tr>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                                    <?= date('M j, Y', strtotime($report['report_date'])) ?>
-                                </td>
-                                <?php if (isset($user) && $user['role_name'] === 'admin'): ?>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                                    <?= htmlspecialchars($report['user_name'] ?? 'Unknown') ?>
-                                </td>
-                                <?php endif; ?>
-                                <td class="px-6 py-4">
-                                    <div class="text-sm text-gray-900 max-w-xs truncate">
-                                        <?= htmlspecialchars(substr($report['work_done'], 0, 100)) ?>
-                                        <?= strlen($report['work_done']) > 100 ? '...' : '' ?>
-                                    </div>
-                                </td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                                    <?= $report['hours_worked'] ?> hrs
-                                </td>
-                                <td class="px-6 py-4">
-                                    <div class="text-sm text-gray-900 max-w-xs truncate">
-                                        <?php if ($report['challenges']): ?>
-                                            <?= htmlspecialchars(substr($report['challenges'], 0, 50)) ?>
-                                            <?= strlen($report['challenges']) > 50 ? '...' : '' ?>
-                                        <?php else: ?>
-                                            <span class="text-gray-400">None</span>
-                                        <?php endif; ?>
-                                    </div>
-                                </td>
-                                <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                                    <a href="/daily-reports/<?= $report['id'] ?>" class="text-indigo-600 hover:text-indigo-900 mr-3">View</a>
-                                    <?php 
-                                    $canEdit = (isset($user) && ($user['role_name'] === 'admin' || $report['user_id'] == $user['id']));
-                                    if ($canEdit): 
-                                    ?>
-                                    <a href="/daily-reports/<?= $report['id'] ?>/edit" class="text-indigo-600 hover:text-indigo-900 mr-3">Edit</a>
-                                    <button onclick="deleteReport(<?= $report['id'] ?>)" class="text-red-600 hover:text-red-900">Delete</button>
-                                    <?php endif; ?>
-                                </td>
-                            </tr>
-                            <?php endforeach; ?>
-                            <?php endif; ?>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
-    </div>
+<div class="table-container">
+    <table class="admin-table">
+        <thead>
+            <tr>
+                <th>Date</th>
+                <?php if (Auth::hasRole('admin')): ?>
+                <th>Employee</th>
+                <?php endif; ?>
+                <th>Work Done</th>
+                <th>Hours</th>
+                <th>Challenges</th>
+                <th style="width: 150px;">Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            <?php if (empty($reports)): ?>
+            <tr>
+                <td colspan="<?= Auth::hasRole('admin') ? '6' : '5' ?>" style="text-align: center; padding: 40px;">
+                    <div style="color: #666666;">No daily reports found</div>
+                </td>
+            </tr>
+            <?php else: ?>
+            <?php foreach ($reports as $report): ?>
+            <tr>
+                <td>
+                    <div class="date-cell">
+                        <?= date('M j, Y', strtotime($report['report_date'])) ?>
+                    </div>
+                </td>
+                <?php if (Auth::hasRole('admin')): ?>
+                <td>
+                    <div class="user-info">
+                        <strong><?= htmlspecialchars($report['user_name'] ?? 'Unknown') ?></strong>
+                    </div>
+                </td>
+                <?php endif; ?>
+                <td>
+                    <div style="max-width: 300px;">
+                        <?= htmlspecialchars(substr($report['work_done'] ?? '', 0, 100)) ?>
+                        <?= strlen($report['work_done'] ?? '') > 100 ? '...' : '' ?>
+                    </div>
+                </td>
+                <td>
+                    <span class="status-badge status-active"><?= $report['hours_worked'] ?> hrs</span>
+                </td>
+                <td>
+                    <div style="max-width: 200px; color: #666666;">
+                        <?php if (isset($report['challenges']) && $report['challenges']): ?>
+                            <?= htmlspecialchars(substr($report['challenges'], 0, 50)) ?>
+                            <?= strlen($report['challenges']) > 50 ? '...' : '' ?>
+                        <?php else: ?>
+                            None
+                        <?php endif; ?>
+                    </div>
+                </td>
+                <td>
+                    <div class="action-buttons">
+                        <a href="/daily-reports/<?= $report['id'] ?>" class="btn btn-sm">View</a>
+                        <?php 
+                        $canEdit = Auth::hasRole('admin') || $report['user_id'] == Auth::user()['id'];
+                        if ($canEdit): 
+                        ?>
+                        <a href="/daily-reports/<?= $report['id'] ?>/edit" class="btn btn-sm">Edit</a>
+                        <button onclick="deleteReport(<?= $report['id'] ?>)" class="btn btn-sm btn-danger">Delete</button>
+                        <?php endif; ?>
+                    </div>
+                </td>
+            </tr>
+            <?php endforeach; ?>
+            <?php endif; ?>
+        </tbody>
+    </table>
 </div>
 
 <script>
@@ -106,5 +105,5 @@ function deleteReport(id) {
 
 <?php
 $content = ob_get_clean();
-require_once __DIR__ . '/../layout.php';
+require_once __DIR__ . '/../admin_layout.php';
 ?>

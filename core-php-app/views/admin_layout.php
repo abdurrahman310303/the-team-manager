@@ -307,9 +307,16 @@
         
         /* Page Header */
         .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
             margin-bottom: 40px;
             padding-bottom: 20px;
             border-bottom: 1px solid #e5e5e5;
+        }
+        
+        .page-actions {
+            flex-shrink: 0;
         }
         
         .page-title {

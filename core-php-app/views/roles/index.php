@@ -6,12 +6,15 @@ ob_start();
 
 <!-- Page Header -->
 <div class="page-header">
-    <h1 class="page-title">Roles</h1>
-    <p class="page-subtitle">Manage system roles and permissions</p>
-</div>
-
-<div style="margin-bottom: 30px;">
-    <a href="/roles/create" class="btn btn-primary">+ Add Role</a>
+    <div>
+        <h1 class="page-title">Roles</h1>
+        <p class="page-subtitle">Manage system roles and permissions</p>
+    </div>
+    <div class="page-actions">
+        <a href="/roles/create" class="btn btn-primary">
+            <span style="margin-right: 6px;">+</span>Add Role
+        </a>
+    </div>
 </div>
 
 <!-- Roles Grid -->

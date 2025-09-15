@@ -5,25 +5,13 @@ ob_start();
 ?>
 
 <div class="page-header">
-    <div style="display: flex; justify-content: space-between; align-items: flex-start;">
-        <div>
-            <h1 class="page-title"><?= htmlspecialchars($role['display_name']) ?></h1>
-            <p class="page-subtitle">Role: <?= htmlspecialchars($role['name']) ?></p>
-        </div>
-        <div style="display: flex; gap: 12px;">
-            <a href="/roles/<?= $role['id'] ?>/edit" class="btn btn-primary">
-                <svg style="width: 16px; height: 16px; margin-right: 6px;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
-                </svg>
-                Edit Role
-            </a>
-            <a href="/roles" class="btn btn-secondary">
-                <svg style="width: 16px; height: 16px; margin-right: 6px;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
-                </svg>
-                Back to Roles
-            </a>
-        </div>
+    <div>
+        <h1 class="page-title"><?= htmlspecialchars($role['display_name']) ?></h1>
+        <p class="page-subtitle">Role: <?= htmlspecialchars($role['name']) ?></p>
+    </div>
+    <div class="page-actions">
+        <a href="/roles" class="btn btn-secondary">← Back to Roles</a>
+        <a href="/roles/<?= $role['id'] ?>/edit" class="btn btn-primary" style="margin-left: 10px;">Edit Role</a>
     </div>
 </div>
 

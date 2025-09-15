@@ -5,26 +5,13 @@ ob_start();
 ?>
 
 <div class="page-header">
-    <div style="display: flex; justify-content: space-between; align-items: flex-start;">
-        <div>
-            <h1 class="page-title">Edit Role</h1>
-            <p class="page-subtitle">Update role information and permissions</p>
-        </div>
-        <div style="display: flex; gap: 12px;">
-            <a href="/roles/<?= $role['id'] ?>" class="btn btn-secondary">
-                <svg style="width: 16px; height: 16px; margin-right: 6px;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
-                </svg>
-                View Role
-            </a>
-            <a href="/roles" class="btn btn-secondary">
-                <svg style="width: 16px; height: 16px; margin-right: 6px;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
-                </svg>
-                Back to Roles
-            </a>
-        </div>
+    <div>
+        <h1 class="page-title">Edit Role</h1>
+        <p class="page-subtitle">Update role information and permissions</p>
+    </div>
+    <div class="page-actions">
+        <a href="/roles" class="btn btn-secondary">← Back to Roles</a>
+        <a href="/roles/<?= $role['id'] ?>" class="btn" style="margin-left: 10px; background: #1a1a1a; color: #ffffff; border: 1px solid #1a1a1a;">View Role</a>
     </div>
 </div>
 

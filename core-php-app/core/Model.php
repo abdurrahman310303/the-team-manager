@@ -50,11 +50,12 @@ abstract class Model {
             // Get the last insert ID using Database wrapper
             $insertId = $this->db->lastInsertId();
             
-            if (!$insertId || $insertId == '0' || $insertId === '0') {
+            // PDO's lastInsertId() returns a string, so we need to check if it's a valid numeric string
+            if (!$insertId || !is_numeric($insertId) || $insertId === '0') {
                 throw new Exception("Failed to get last insert ID. Insert may have failed.");
             }
             
-            // Ensure we return a proper integer
+            // Convert to integer and return
             return (int) $insertId;
             
         } catch (PDOException $e) {

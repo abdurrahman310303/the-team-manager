@@ -43,8 +43,7 @@ ob_start();
                     <option value="referral">Referral</option>
                     <option value="social_media">Social Media</option>
                     <option value="cold_call">Cold Call</option>
-                    <option value="email_campaign">Email Campaign</option>
-                    <option value="trade_show">Trade Show</option>
+                    <option value="advertisement">Advertisement</option>
                     <option value="other">Other</option>
                 </select>
             </div>
@@ -55,17 +54,18 @@ ob_start();
                     <option value="new">New</option>
                     <option value="contacted">Contacted</option>
                     <option value="qualified">Qualified</option>
-                    <option value="proposal">Proposal</option>
-                    <option value="won">Won</option>
-                    <option value="lost">Lost</option>
+                    <option value="proposal_sent">Proposal Sent</option>
+                    <option value="negotiating">Negotiating</option>
+                    <option value="closed_won">Closed Won</option>
+                    <option value="closed_lost">Closed Lost</option>
                 </select>
             </div>
         </div>
 
         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
             <div class="form-group">
-                <label for="potential_value" class="form-label">Potential Value</label>
-                <input type="number" name="potential_value" id="potential_value" step="0.01" min="0" class="form-input" placeholder="0.00">
+                <label for="estimated_value" class="form-label">Potential Value</label>
+                <input type="number" name="estimated_value" id="estimated_value" step="0.01" min="0" class="form-input" placeholder="0.00">
             </div>
 
             <div class="form-group">
@@ -73,7 +73,10 @@ ob_start();
                 <select name="assigned_to" id="assigned_to" class="form-select">
                     <option value="">Unassigned</option>
                     <?php foreach ($salespeople as $person): ?>
-                        <option value="<?= $person['id'] ?>"><?= htmlspecialchars($person['name']) ?></option>
+                        <option value="<?= $person['id'] ?>">
+                            <?= htmlspecialchars($person['name']) ?> 
+                            (<?= htmlspecialchars($person['role_display_name'] ?? $person['role_name'] ?? 'User') ?>)
+                        </option>
                     <?php endforeach; ?>
                 </select>
             </div>

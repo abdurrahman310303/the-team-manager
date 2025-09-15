@@ -78,7 +78,7 @@ class LeadController
     {
         Auth::requireBDOrAdmin();
         
-        $bdUsers = $this->userModel->getUsersByRole('bd');
+        $salespeople = $this->userModel->getAll();
         
         $currentPage = 'leads';
         require_once __DIR__ . '/../views/leads/create.php';
@@ -113,13 +113,18 @@ class LeadController
             'last_contact_date' => !empty($_POST['last_contact_date']) ? $_POST['last_contact_date'] : null,
         ];
 
-        $leadId = $this->leadModel->create($data);
-        
-        if ($leadId) {
-            Session::flash('success', 'Lead created successfully');
-            header('Location: /leads/' . $leadId);
-        } else {
-            Session::flash('error', 'Error creating lead');
+        try {
+            $leadId = $this->leadModel->create($data);
+            
+            if ($leadId && $leadId > 0) {
+                Session::flash('success', 'Lead created successfully');
+                header('Location: /leads/' . $leadId);
+            } else {
+                Session::flash('error', 'Error creating lead - invalid ID returned');
+                header('Location: /leads/create');
+            }
+        } catch (Exception $e) {
+            Session::flash('error', 'Error creating lead: ' . $e->getMessage());
             header('Location: /leads/create');
         }
         exit;
@@ -151,7 +156,7 @@ class LeadController
             exit;
         }
         
-        $bdUsers = $this->userModel->getUsersByRole('bd');
+        $salespeople = $this->userModel->getAll();
         
         $currentPage = 'leads';
         require_once __DIR__ . '/../views/leads/edit.php';

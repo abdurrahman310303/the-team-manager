@@ -11,7 +11,7 @@ ob_start();
     <div class="page-actions">
         <?php if (Auth::hasAnyRole(['admin', 'bd'])): ?>
         <a href="/leads/create" class="btn btn-primary">
-            Add Lead
+            <span style="margin-right: 6px;">+</span>Add Lead
         </a>
         <?php endif; ?>
     </div>
@@ -58,7 +58,7 @@ ob_start();
                 </td>
                 <td><?= htmlspecialchars($lead['source'] ?? '-') ?></td>
                 <td>
-                    <?= isset($lead['potential_value']) && $lead['potential_value'] ? '$' . number_format($lead['potential_value'], 2) : '-' ?>
+                    <?= isset($lead['estimated_value']) && $lead['estimated_value'] ? '$' . number_format($lead['estimated_value'], 2) : '-' ?>
                 </td>
                 <td><?= htmlspecialchars($lead['assigned_name'] ?? 'Unassigned') ?></td>
                 <td>

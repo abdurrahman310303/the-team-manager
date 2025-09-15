@@ -103,11 +103,16 @@ class User extends Model {
     
     public function createRole($data) {
         $sql = "INSERT INTO roles (name, display_name, description) VALUES (?, ?, ?)";
-        return $this->db->query($sql, [
+        $stmt = $this->db->query($sql, [
             $data['name'], 
             $data['display_name'], 
             $data['description'] ?? ''
         ]);
+        
+        if ($stmt) {
+            return $this->db->lastInsertId();
+        }
+        return false;
     }
     
     public function updateRole($id, $data) {

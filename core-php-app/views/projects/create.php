@@ -20,12 +20,7 @@ ob_start();
             <textarea name="description" id="description" rows="3" class="form-textarea" placeholder="Project description..."></textarea>
         </div>
 
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
-            <div class="form-group">
-                <label for="client_name" class="form-label">Client Name</label>
-                <input type="text" name="client_name" id="client_name" class="form-input" placeholder="Client name">
-            </div>
-
+        <div style="display: grid; grid-template-columns: 1fr; gap: 20px;">
             <div class="form-group">
                 <label for="budget" class="form-label">Budget</label>
                 <input type="number" name="budget" id="budget" step="0.01" min="0" class="form-input" placeholder="0.00">
@@ -69,25 +64,6 @@ ob_start();
                     <option value="cancelled">Cancelled</option>
                 </select>
             </div>
-        </div>
-
-        <div class="form-group">
-            <label class="form-label">Assign Team Members</label>
-            <div style="max-height: 200px; overflow-y: auto; border: 1px solid #cccccc; border-radius: 4px; padding: 15px; background: #f9f9f9;">
-                <?php if (isset($users) && !empty($users)): ?>
-                    <?php foreach ($users as $user): ?>
-                        <div style="margin-bottom: 8px;">
-                            <label style="display: flex; align-items: center; cursor: pointer;">
-                                <input type="checkbox" name="assigned_users[]" value="<?= $user['id'] ?>" style="margin-right: 8px;">
-                                <span><?= htmlspecialchars($user['name']) ?> <small style="color: #666;">(<?= htmlspecialchars($user['role_display_name'] ?? ucfirst($user['role_name'])) ?>)</small></span>
-                            </label>
-                        </div>
-                    <?php endforeach; ?>
-                <?php else: ?>
-                    <p style="color: #666; margin: 0;">No users available</p>
-                <?php endif; ?>
-            </div>
-            <small style="color: #666; display: block; margin-top: 5px;">Select team members who will work on this project.</small>
         </div>
         
         <div style="display: flex; gap: 10px; justify-content: flex-end; padding-top: 20px; border-top: 1px solid #e5e5e5;">

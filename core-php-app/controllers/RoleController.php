@@ -79,9 +79,9 @@ class RoleController
 
         $roleId = $this->userModel->createRole($data);
         
-        if ($roleId) {
+        if ($roleId && is_numeric($roleId)) {
             Session::flash('success', 'Role created successfully');
-            header('Location: /roles/' . $roleId);
+            header('Location: /roles/' . (int)$roleId);
         } else {
             Session::flash('error', 'Error creating role');
             header('Location: /roles/create');

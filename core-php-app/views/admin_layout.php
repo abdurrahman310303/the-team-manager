@@ -544,11 +544,44 @@
         /* Flash Messages */
         .flash-message {
             padding: 16px 20px;
-            margin: 20px auto;
-            max-width: 1200px;
+            margin: 0 auto 20px;
+            max-width: 600px;
             border-radius: 4px;
             font-size: 14px;
             font-weight: 500;
+            position: fixed;
+            top: 80px; /* Position below the navbar */
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 1001; /* Above navbar */
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            animation: slideDown 0.3s ease-out;
+        }
+        
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateX(-50%) translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(-50%) translateY(0);
+            }
+        }
+        
+        .flash-message.fade-out {
+            animation: fadeOut 0.3s ease-out forwards;
+        }
+        
+        @keyframes fadeOut {
+            from {
+                opacity: 1;
+                transform: translateX(-50%) translateY(0);
+            }
+            to {
+                opacity: 0;
+                transform: translateX(-50%) translateY(-20px);
+            }
         }
         
         .flash-success {
@@ -827,6 +860,19 @@
             if (!menuBtn && !navItem && navMenu && navMenu.classList.contains('mobile-open')) {
                 navMenu.classList.remove('mobile-open');
             }
+        });
+        
+        // Auto-hide flash messages after 5 seconds
+        document.addEventListener('DOMContentLoaded', function() {
+            const flashMessages = document.querySelectorAll('.flash-message');
+            flashMessages.forEach(function(message) {
+                setTimeout(function() {
+                    message.classList.add('fade-out');
+                    setTimeout(function() {
+                        message.remove();
+                    }, 300); // Wait for fade animation to complete
+                }, 5000); // Hide after 5 seconds
+            });
         });
     </script>
 

@@ -8,7 +8,15 @@ class Database {
     private $connection;
     
     private function __construct() {
-        $config = require_once __DIR__ . '/../config/database.php';
+        $configPath = __DIR__ . '/../config/database.php';
+        
+        // Always include instead of require_once to avoid the "true" return issue
+        $config = include $configPath;
+        
+        // If config is not an array, something went wrong
+        if (!is_array($config)) {
+            throw new Exception("Database configuration is invalid or missing");
+        }
         
         try {
             $this->connection = new PDO(
@@ -35,7 +43,10 @@ class Database {
     
     public function query($sql, $params = []) {
         $stmt = $this->connection->prepare($sql);
-        $stmt->execute($params);
+        $result = $stmt->execute($params);
+        if (!$result) {
+            throw new Exception('Query execution failed: ' . implode(', ', $stmt->errorInfo()));
+        }
         return $stmt;
     }
     

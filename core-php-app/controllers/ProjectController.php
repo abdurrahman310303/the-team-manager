@@ -5,6 +5,7 @@
 
 require_once __DIR__ . '/../models/Project.php';
 require_once __DIR__ . '/../models/User.php';
+require_once __DIR__ . '/../core/Auth.php';
 
 class ProjectController {
     private $projectModel;
@@ -91,11 +92,11 @@ class ProjectController {
             'name' => $_POST['name'] ?? '',
             'description' => $_POST['description'] ?? '',
             'status' => $_POST['status'] ?? 'planning',
-            'budget' => $_POST['budget'] ?? null,
-            'start_date' => $_POST['start_date'] ?? null,
-            'end_date' => $_POST['end_date'] ?? null,
-            'project_manager_id' => $_POST['project_manager_id'] ?? null,
-            'client_id' => $_POST['client_id'] ?? null,
+            'budget' => !empty($_POST['budget']) ? (float)$_POST['budget'] : null,
+            'start_date' => !empty($_POST['start_date']) ? $_POST['start_date'] : null,
+            'end_date' => !empty($_POST['end_date']) ? $_POST['end_date'] : null,
+            'project_manager_id' => !empty($_POST['project_manager_id']) ? (int)$_POST['project_manager_id'] : null,
+            'client_id' => !empty($_POST['client_id']) ? (int)$_POST['client_id'] : null,
         ];
         
         // Basic validation
@@ -105,14 +106,25 @@ class ProjectController {
             exit;
         }
         
-        $projectId = $this->projectModel->create($data);
-        
-        // Assign users to project if provided
-        if (!empty($_POST['assigned_users']) && is_array($_POST['assigned_users'])) {
-            $this->projectModel->assignUsers($projectId, $_POST['assigned_users']);
+        try {
+            $projectId = $this->projectModel->create($data);
+            
+            // Convert to integer and check if we have a reasonable ID
+            $projectId = (int) $projectId;
+            
+            // Only fail if we get 0 or negative ID
+            if ($projectId <= 0) {
+                throw new Exception("Failed to create project - no valid ID generated");
+            }
+            
+            Session::flash('success', 'Project created successfully! You can assign team members by editing the project.');
+            
+        } catch (Exception $e) {
+            Session::flash('error', 'Failed to create project: ' . $e->getMessage());
+            header('Location: /projects/create');
+            exit;
         }
         
-        Session::flash('success', 'Project created successfully');
         header('Location: /projects');
         exit;
     }
@@ -182,10 +194,15 @@ class ProjectController {
         
         $this->projectModel->update($id, $data);
         
+        // Debug: Log what users are being assigned in update
+        error_log("UPDATE - POST data for assigned_users: " . var_export($_POST['assigned_users'] ?? 'NOT_SET', true));
+        
         // Update assigned users
         if (isset($_POST['assigned_users']) && is_array($_POST['assigned_users'])) {
+            error_log("UPDATE - Assigning users: " . implode(', ', $_POST['assigned_users']) . " to project " . $id);
             $this->projectModel->assignUsers($id, $_POST['assigned_users']);
         } else {
+            error_log("UPDATE - Clearing all user assignments for project " . $id);
             $this->projectModel->assignUsers($id, []);
         }
         

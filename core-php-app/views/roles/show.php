@@ -81,8 +81,26 @@ ob_start();
                     </td>
                     <td><?= htmlspecialchars($user['email']) ?></td>
                     <td>
-                        <span class="badge <?= $user['is_active'] ? 'badge-approved' : 'badge-pending' ?>">
-                            <?= $user['is_active'] ? 'Active' : 'Inactive' ?>
+                        <span class="badge <?php 
+                            switch(strtolower($user['role_name'])) {
+                                case 'super_admin':
+                                case 'admin': echo 'badge-approved'; break;
+                                case 'manager': echo 'badge-success'; break;
+                                case 'team_member': echo 'badge-info'; break;
+                                case 'investor': echo 'badge-pending'; break;
+                                default: echo 'badge-pending';
+                            }
+                        ?>">
+                            <?php 
+                            switch(strtolower($user['role_name'])) {
+                                case 'super_admin': echo 'Super Admin'; break;
+                                case 'admin': echo 'Active'; break;
+                                case 'manager': echo 'Manager'; break;
+                                case 'team_member': echo 'Team Member'; break;
+                                case 'investor': echo 'Investor'; break;
+                                default: echo 'User';
+                            }
+                            ?>
                         </span>
                     </td>
                     <td class="date-cell">

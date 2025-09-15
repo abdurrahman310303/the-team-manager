@@ -129,7 +129,7 @@ class DailyReportController
         
         if ($reportId) {
             Session::flash('success', 'Daily report created successfully');
-            header('Location: /daily-reports/' . $reportId);
+            header('Location: /daily-reports');
         } else {
             Session::flash('error', 'Error creating daily report');
             header('Location: /daily-reports/create');
@@ -229,7 +229,7 @@ class DailyReportController
 
         if ($this->dailyReportModel->update($id, $data)) {
             Session::flash('success', 'Daily report updated successfully');
-            header('Location: /daily-reports/' . $id);
+            header('Location: /daily-reports');
         } else {
             Session::flash('error', 'Error updating daily report');
             header('Location: /daily-reports/' . $id . '/edit');

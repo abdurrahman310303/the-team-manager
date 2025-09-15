@@ -3,6 +3,21 @@
 class DailyReport extends Model
 {
     protected $table = 'daily_reports';
+    protected $fillable = [
+        'user_id',
+        'project_id',
+        'report_type',
+        'report_date',
+        'work_completed',
+        'challenges_faced',
+        'next_plans',
+        'hours_worked',
+        'leads_generated',
+        'proposals_submitted',
+        'projects_locked',
+        'revenue_generated',
+        'notes'
+    ];
 
     public function getAll()
     {
@@ -25,6 +40,11 @@ class DailyReport extends Model
                 LEFT JOIN users u ON dr.user_id = u.id 
                 WHERE dr.id = ?";
         return $this->db->fetch($sql, [$id]);
+    }
+
+    public function findWithUser($id)
+    {
+        return $this->find($id); // Same as find() since it already includes user data
     }
 
     public function getByUserId($userId)

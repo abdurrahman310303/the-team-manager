@@ -55,8 +55,8 @@ ob_start();
                 <?php endif; ?>
                 <td>
                     <div style="max-width: 300px;">
-                        <?= htmlspecialchars(substr($report['work_done'] ?? '', 0, 100)) ?>
-                        <?= strlen($report['work_done'] ?? '') > 100 ? '...' : '' ?>
+                        <?= htmlspecialchars(substr($report['work_completed'] ?? '', 0, 100)) ?>
+                        <?= strlen($report['work_completed'] ?? '') > 100 ? '...' : '' ?>
                     </div>
                 </td>
                 <td>
@@ -64,9 +64,9 @@ ob_start();
                 </td>
                 <td>
                     <div style="max-width: 200px; color: #666666;">
-                        <?php if (isset($report['challenges']) && $report['challenges']): ?>
-                            <?= htmlspecialchars(substr($report['challenges'], 0, 50)) ?>
-                            <?= strlen($report['challenges']) > 50 ? '...' : '' ?>
+                        <?php if (isset($report['challenges_faced']) && $report['challenges_faced']): ?>
+                            <?= htmlspecialchars(substr($report['challenges_faced'], 0, 50)) ?>
+                            <?= strlen($report['challenges_faced']) > 50 ? '...' : '' ?>
                         <?php else: ?>
                             None
                         <?php endif; ?>

@@ -5,27 +5,24 @@ $currentPage = 'payments';
 // Get user from session for admin layout detection
 $user = Session::get('user');
 
+// Get user from session for admin layout detection
+$user = Session::get('user');
+
 // Check if user is admin and use admin layout
 if (isset($user) && $user['role_name'] === 'admin') {
     ob_start();
 ?>
 
-<div class="page-header">
-    <div style="display: flex; justify-content: space-between; align-items: flex-start;">
-        <div>
+        <div style="display: flex; justify-content: space-between; align-items: center;">
             <h1 class="page-title">Edit Payment</h1>
-            <p class="page-subtitle">Update payment record details and information</p>
-        </div>
-        <div>
-            <a href="/payments/<?= $payment['id'] ?>" class="btn btn-secondary">
-                <svg style="width: 16px; height: 16px; margin-right: 6px;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <a href="/payments/<?= $payment['id'] ?>" class="btn btn-sm btn-secondary">
+                <svg style="width: 14px; height: 14px; margin-right: 4px;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m0 7h18"></path>
                 </svg>
                 Back to Payment
             </a>
         </div>
-    </div>
-</div>
+        <p class="page-subtitle">Update payment record details and information</p>
 
 <div class="form-container">
     <form action="/payments/<?= $payment['id'] ?>/update" method="POST" enctype="multipart/form-data">
@@ -57,15 +54,15 @@ if (isset($user) && $user['role_name'] === 'admin') {
         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 20px;">
             <div class="form-group">
                 <label class="form-label">Payment Type *</label>
-                <select name="payment_type" required class="form-select">
-                    <option value="">Select payment type</option>
-                    <option value="investment" <?= $payment['payment_type'] === 'investment' ? 'selected' : '' ?>>Investment</option>
-                    <option value="expense_reimbursement" <?= $payment['payment_type'] === 'expense_reimbursement' ? 'selected' : '' ?>>Expense Reimbursement</option>
-                    <option value="profit_share" <?= $payment['payment_type'] === 'profit_share' ? 'selected' : '' ?>>Profit Share</option>
-                    <option value="salary" <?= $payment['payment_type'] === 'salary' ? 'selected' : '' ?>>Salary</option>
-                    <option value="bonus" <?= $payment['payment_type'] === 'bonus' ? 'selected' : '' ?>>Bonus</option>
-                    <option value="other" <?= $payment['payment_type'] === 'other' ? 'selected' : '' ?>>Other</option>
-                </select>
+                                                <select name="payment_type" required
+                                        class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+                                    <option value="">Select payment type</option>
+                                    <option value="investment" <?= $payment['payment_type'] === 'investment' ? 'selected' : '' ?>>Investment</option>
+                                    <option value="expense_reimbursement" <?= $payment['payment_type'] === 'expense_reimbursement' ? 'selected' : '' ?>>Expense Reimbursement</option>
+                                    <option value="profit_share" <?= $payment['payment_type'] === 'profit_share' ? 'selected' : '' ?>>Profit Share</option>
+                                    <option value="reimbursement" <?= $payment['payment_type'] === 'reimbursement' ? 'selected' : '' ?>>Reimbursement</option>
+                                    <option value="other" <?= $payment['payment_type'] === 'other' ? 'selected' : '' ?>>Other</option>
+                                </select>
             </div>
 
             <div class="form-group">

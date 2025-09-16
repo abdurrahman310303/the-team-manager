@@ -57,7 +57,7 @@ class ExpenseController
         $user = Auth::user();
         
         // Check permissions - users can only view their own expenses unless they're admin
-        if (!Auth::hasRole('admin') && $expense['user_id'] != $user['id']) {
+        if (!Auth::hasRole('admin') && $expense['added_by'] != $user['id']) {
             Session::flash('error', 'Access denied');
             header('Location: /expenses');
             exit;
@@ -91,7 +91,7 @@ class ExpenseController
         
         $user = Auth::user();
 
-        $required = ['description', 'amount', 'category'];
+        $required = ['title', 'description', 'amount', 'category'];
         foreach ($required as $field) {
             if (empty($_POST[$field])) {
                 Session::flash('error', 'Please fill in all required fields');
@@ -108,20 +108,37 @@ class ExpenseController
         }
 
         $data = [
-            'user_id' => $user['id'],
+            'project_id' => 2, // Default project for now - should be made configurable
+            'added_by' => $user['id'],
+            'title' => trim($_POST['title']),
             'description' => trim($_POST['description']),
             'amount' => (float) $_POST['amount'],
             'category' => $_POST['category'],
-            'date' => !empty($_POST['date']) ? $_POST['date'] : date('Y-m-d'),
-            'receipt_url' => !empty($_POST['receipt_url']) ? trim($_POST['receipt_url']) : '',
+            'expense_date' => !empty($_POST['expense_date']) ? $_POST['expense_date'] : date('Y-m-d'),
             'status' => 'pending' // Default status for new expenses
         ];
+
+        // Handle file upload
+        if (isset($_FILES['receipt_image']) && $_FILES['receipt_image']['error'] === UPLOAD_ERR_OK) {
+            $uploadDir = __DIR__ . '/../uploads/receipts/';
+            if (!is_dir($uploadDir)) {
+                mkdir($uploadDir, 0755, true);
+            }
+            
+            $fileExtension = pathinfo($_FILES['receipt_image']['name'], PATHINFO_EXTENSION);
+            $fileName = uniqid() . '_' . time() . '.' . $fileExtension;
+            $uploadPath = $uploadDir . $fileName;
+            
+            if (move_uploaded_file($_FILES['receipt_image']['tmp_name'], $uploadPath)) {
+                $data['receipt_image'] = 'uploads/receipts/' . $fileName; // Use receipt_image to match database
+            }
+        }
 
         $expenseId = $this->expenseModel->create($data);
         
         if ($expenseId) {
             Session::flash('success', 'Expense submitted successfully');
-            header('Location: /expenses/' . $expenseId);
+            header('Location: /expenses');
         } else {
             Session::flash('error', 'Error submitting expense');
             header('Location: /expenses/create');
@@ -152,7 +169,7 @@ class ExpenseController
         
         // Check permissions - users can only edit their own pending expenses unless they're admin
         if (!Auth::hasRole('admin')) {
-            if ($expense['user_id'] != $user['id'] || $expense['status'] !== 'pending') {
+            if ($expense['added_by'] != $user['id'] || $expense['status'] !== 'pending') {
                 Session::flash('error', 'Access denied or expense cannot be edited');
                 header('Location: /expenses');
                 exit;
@@ -204,14 +221,14 @@ class ExpenseController
         
         // Check permissions
         if (!Auth::hasRole('admin')) {
-            if ($expense['user_id'] != $user['id'] || $expense['status'] !== 'pending') {
+            if ($expense['added_by'] != $user['id'] || $expense['status'] !== 'pending') {
                 Session::flash('error', 'Access denied or expense cannot be edited');
                 header('Location: /expenses');
                 exit;
             }
         }
 
-        $required = ['description', 'amount', 'category'];
+        $required = ['title', 'description', 'amount', 'category'];
         foreach ($required as $field) {
             if (empty($_POST[$field])) {
                 Session::flash('error', 'Please fill in all required fields');
@@ -228,12 +245,35 @@ class ExpenseController
         }
 
         $data = [
+            'title' => trim($_POST['title']),
             'description' => trim($_POST['description']),
             'amount' => (float) $_POST['amount'],
             'category' => $_POST['category'],
-            'date' => !empty($_POST['date']) ? $_POST['date'] : $expense['date'],
-            'receipt_url' => !empty($_POST['receipt_url']) ? trim($_POST['receipt_url']) : ''
+            'expense_date' => !empty($_POST['expense_date']) ? $_POST['expense_date'] : $expense['expense_date']
         ];
+
+        // Handle file upload
+        if (isset($_FILES['receipt_image']) && $_FILES['receipt_image']['error'] === UPLOAD_ERR_OK) {
+            $uploadDir = __DIR__ . '/../uploads/receipts/';
+            if (!is_dir($uploadDir)) {
+                mkdir($uploadDir, 0755, true);
+            }
+            
+            $fileExtension = pathinfo($_FILES['receipt_image']['name'], PATHINFO_EXTENSION);
+            $fileName = uniqid() . '_' . time() . '.' . $fileExtension;
+            $uploadPath = $uploadDir . $fileName;
+            
+            if (move_uploaded_file($_FILES['receipt_image']['tmp_name'], $uploadPath)) {
+                // Delete old file if it exists
+                if (!empty($expense['receipt_image'])) {
+                    $oldFile = __DIR__ . '/../' . $expense['receipt_image'];
+                    if (file_exists($oldFile)) {
+                        unlink($oldFile);
+                    }
+                }
+                $data['receipt_image'] = 'uploads/receipts/' . $fileName;
+            }
+        }
 
         // Admins can also update status
         if (Auth::hasRole('admin') && isset($_POST['status'])) {
@@ -242,7 +282,7 @@ class ExpenseController
 
         if ($this->expenseModel->update($id, $data)) {
             Session::flash('success', 'Expense updated successfully');
-            header('Location: /expenses/' . $id);
+            header('Location: /expenses');
         } else {
             Session::flash('error', 'Error updating expense');
             header('Location: /expenses/' . $id . '/edit');
@@ -340,7 +380,7 @@ class ExpenseController
         $user = Auth::user();
         
         // Check permissions
-        if (!Auth::hasRole('admin') && $expense['user_id'] != $user['id']) {
+        if (!Auth::hasRole('admin') && $expense['added_by'] != $user['id']) {
             Session::flash('error', 'Access denied');
             header('Location: /expenses');
             exit;

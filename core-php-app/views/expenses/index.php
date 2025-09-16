@@ -65,7 +65,7 @@ ob_start();
                 <?php if (Auth::hasRole('admin')): ?>
                 <th>Employee</th>
                 <?php endif; ?>
-                <th>Description</th>
+                <th>Title</th>
                 <th>Category</th>
                 <th>Amount</th>
                 <th>Status</th>
@@ -96,7 +96,7 @@ ob_start();
                 <?php endif; ?>
                 <td>
                     <div style="max-width: 300px;">
-                        <?= htmlspecialchars($expense['description']) ?>
+                        <?= htmlspecialchars($expense['title']) ?>
                     </div>
                 </td>
                 <td>

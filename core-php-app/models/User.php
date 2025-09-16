@@ -70,6 +70,24 @@ class User extends Model {
         return $this->db->fetchAll($sql, [$roleName]);
     }
     
+    public function getNonInvestors() {
+        $sql = "SELECT u.*, r.name as role_name, r.display_name as role_display_name 
+                FROM users u 
+                LEFT JOIN roles r ON u.role_id = r.id 
+                WHERE r.name != 'investor' 
+                ORDER BY u.name";
+        return $this->db->fetchAll($sql);
+    }
+    
+    public function getInvestors() {
+        $sql = "SELECT u.*, r.name as role_name, r.display_name as role_display_name 
+                FROM users u 
+                LEFT JOIN roles r ON u.role_id = r.id 
+                WHERE r.name = 'investor' 
+                ORDER BY u.name";
+        return $this->db->fetchAll($sql);
+    }
+    
     public function getAll() {
         $sql = "SELECT u.*, r.name as role_name, r.display_name as role_display_name 
                 FROM users u 

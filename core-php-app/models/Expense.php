@@ -3,6 +3,18 @@
 class Expense extends Model
 {
     protected $table = 'expenses';
+    protected $fillable = [
+        'project_id',
+        'added_by',
+        'title',
+        'description',
+        'amount',
+        'category',
+        'expense_date',
+        'receipt_image',
+        'status',
+        'notes'
+    ];
 
     public function getAll()
     {
@@ -25,6 +37,11 @@ class Expense extends Model
                 LEFT JOIN users u ON e.added_by = u.id 
                 WHERE e.id = ?";
         return $this->db->fetch($sql, [$id]);
+    }
+
+    public function findWithUser($id)
+    {
+        return $this->find($id); // Same as find() since it already includes user data
     }
 
     public function getByUserId($userId)

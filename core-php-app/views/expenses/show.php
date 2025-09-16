@@ -7,13 +7,50 @@ if (isset($user) && $user['role_name'] === 'admin') {
     ob_start();
 ?>
 
-<div class="page-header">
-    <div style="display: flex; justify-content: space-between; align-items: flex-start;">
-        <div>
-            <h1 class="page-title">Expense Details</h1>
-            <p class="page-subtitle"><?= htmlspecialchars($expense['title']) ?> - $<?= number_format($expense['amount'], 2) ?></p>
-        </div>
-        <div style="display: flex; gap: 12px;">
+<!-- Admin Layout for Expense Details -->
+<style>
+.expense-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 40px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid #e5e5e5;
+    flex-wrap: wrap;
+    gap: 16px;
+}
+
+.expense-header-left {
+    flex: 1;
+    min-width: 0;
+}
+
+.expense-header-right {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+@media (max-width: 768px) {
+    .expense-header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    
+    .expense-header-right {
+        width: 100%;
+        justify-content: flex-start;
+    }
+}
+</style>
+
+<div class="expense-header">
+    <div class="expense-header-left">
+        <h1 class="page-title">Expense Details</h1>
+        <p class="page-subtitle"><?= htmlspecialchars($expense['title']) ?> - $<?= number_format($expense['amount'], 2) ?></p>
+    </div>
+    <div class="expense-header-right">
             <?php if ($expense['status'] === 'pending'): ?>
                 <form action="/expenses/<?= $expense['id'] ?>/approve" method="POST" style="display: inline;">
                     <button type="submit" class="btn btn-sm btn-success">
@@ -46,16 +83,25 @@ if (isset($user) && $user['role_name'] === 'admin') {
             </a>
             <?php endif; ?>
             
+            <?php 
+            $canDelete = ($user['role_name'] === 'admin' || $expense['added_by'] == $user['id']);
+            if ($canDelete): 
+            ?>
             <button onclick="deleteExpense(<?= $expense['id'] ?>)" class="btn btn-sm btn-danger">
                 <svg style="width: 16px; height: 16px; margin-right: 6px;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
                 </svg>
                 Delete
             </button>
+            <?php endif; ?>
             
-            <a href="/expenses" class="btn btn-sm btn-secondary">← Back to Expenses</a>
-        </div>
+                        <a href="/expenses" class="btn btn-sm btn-secondary">← Back to Expenses</a>
     </div>
+</div>
+
+<div class="card-grid">
+    </div>
+</div>
 </div>
 
 <div class="card-grid">
@@ -218,7 +264,32 @@ ob_start();
                 </div>
             </div>
         </div>
-        <div class="mt-5 flex lg:mt-0 lg:ml-4">
+        <div class="mt-5 flex lg:mt-0 lg:ml-4 space-x-3">
+            <?php 
+            $canEdit = (Auth::hasRole('admin') || 
+                       ($expense['added_by'] == Auth::user()['id'] && $expense['status'] === 'pending'));
+            if ($canEdit): 
+            ?>
+            <a href="/expenses/<?= $expense['id'] ?>/edit" class="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                <svg class="flex-shrink-0 mr-1.5 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
+                </svg>
+                Edit
+            </a>
+            <?php endif; ?>
+            
+            <?php 
+            $canDelete = Auth::hasRole('admin') || $expense['added_by'] == Auth::user()['id'];
+            if ($canDelete): 
+            ?>
+            <button onclick="deleteExpense(<?= $expense['id'] ?>)" class="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500">
+                <svg class="flex-shrink-0 mr-1.5 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                </svg>
+                Delete
+            </button>
+            <?php endif; ?>
+            
             <span class="sm:ml-3">
                 <a href="/expenses" class="inline-flex items-center px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
                     ← Back to Expenses
@@ -372,6 +443,16 @@ function openImageModal(imageSrc) {
 
 function closeImageModal() {
     document.getElementById('imageModal').classList.add('hidden');
+}
+
+function deleteExpense(id) {
+    if (confirm('Are you sure you want to delete this expense? This action cannot be undone.')) {
+        const form = document.createElement('form');
+        form.method = 'POST';
+        form.action = `/expenses/${id}/delete`;
+        document.body.appendChild(form);
+        form.submit();
+    }
 }
 
 // Close modal when clicking outside

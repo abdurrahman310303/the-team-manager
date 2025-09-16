@@ -3,6 +3,25 @@
 class Payment extends Model
 {
     protected $table = 'payments';
+    protected $fillable = [
+        'project_id',
+        'investor_id', 
+        'recipient_id',
+        'amount',
+        'currency',
+        'exchange_rate',
+        'amount_usd',
+        'payment_type',
+        'fund_purpose',
+        'is_project_related',
+        'payment_method',
+        'status',
+        'payment_date',
+        'reference_number',
+        'notes',
+        'description',
+        'receipt_image'
+    ];
 
     public function getAll()
     {
@@ -38,6 +57,11 @@ class Payment extends Model
                 LEFT JOIN users r ON p.recipient_id = r.id 
                 WHERE p.id = ?";
         return $this->db->fetch($sql, [$id]);
+    }
+
+    public function findWithRelations($id)
+    {
+        return $this->find($id);
     }
 
     public function getByUserId($userId)

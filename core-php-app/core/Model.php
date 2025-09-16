@@ -40,23 +40,35 @@ abstract class Model {
         $sql = "INSERT INTO {$this->table} ({$columns}) VALUES ({$placeholders})";
         
         try {
+            // Debug logging
+            $logFile = __DIR__ . '/../debug_payment.log';
+            file_put_contents($logFile, date('Y-m-d H:i:s') . " - Model::create() - About to execute SQL: " . $sql . "\n", FILE_APPEND);
+            file_put_contents($logFile, date('Y-m-d H:i:s') . " - Model::create() - With values: " . json_encode(array_values($data)) . "\n", FILE_APPEND);
+            
             // Use the Database wrapper's query method
             $stmt = $this->db->query($sql, array_values($data));
             
-            if (!$stmt) {
-                throw new Exception("Failed to execute insert statement");
+            file_put_contents($logFile, date('Y-m-d H:i:s') . " - Model::create() - Statement executed, type: " . gettype($stmt) . "\n", FILE_APPEND);
+            
+            // Ensure we got a PDOStatement back
+            if (!($stmt instanceof PDOStatement)) {
+                throw new Exception("Failed to execute insert statement - invalid statement returned");
             }
             
             // Get the last insert ID using Database wrapper
             $insertId = $this->db->lastInsertId();
             
+            file_put_contents($logFile, date('Y-m-d H:i:s') . " - Model::create() - Last insert ID: " . var_export($insertId, true) . "\n", FILE_APPEND);
+            
             // PDO's lastInsertId() returns a string, so we need to check if it's a valid numeric string
             if (!$insertId || !is_numeric($insertId) || $insertId === '0') {
-                throw new Exception("Failed to get last insert ID. Insert may have failed.");
+                throw new Exception("Failed to get last insert ID: " . $insertId . ". Insert may have failed.");
             }
             
             // Convert to integer and return
-            return (int) $insertId;
+            $result = (int) $insertId;
+            file_put_contents($logFile, date('Y-m-d H:i:s') . " - Model::create() - Returning: " . var_export($result, true) . "\n", FILE_APPEND);
+            return $result;
             
         } catch (PDOException $e) {
             throw new Exception("Database insert failed: " . $e->getMessage());

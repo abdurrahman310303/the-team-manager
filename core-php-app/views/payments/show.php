@@ -1,62 +1,66 @@
 <?php
 $title = 'Payment Details - Team Manager';
 $currentPage = 'payments';
+$user = Auth::user();
 
 // Check if user is admin and use admin layout
 if (isset($user) && $user['role_name'] === 'admin') {
     ob_start();
 ?>
 
-<div class="page-header">
-    <div style="display: flex; justify-content: space-between; align-items: flex-start;">
-        <div>
-            <h1 class="page-title">Payment Details</h1>
-            <p class="page-subtitle"><?= ucwords(str_replace('_', ' ', $payment['payment_type'])) ?> - $<?= number_format($payment['amount'], 2) ?></p>
-        </div>
-        <div style="display: flex; gap: 12px;">
-            <?php if ($payment['status'] === 'pending'): ?>
-                <form action="/payments/<?= $payment['id'] ?>/approve" method="POST" style="display: inline;">
-                    <button type="submit" class="btn btn-sm btn-success">
-                        <svg style="width: 16px; height: 16px; margin-right: 6px;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
-                        </svg>
-                        Approve
-                    </button>
-                </form>
-                <form action="/payments/<?= $payment['id'] ?>/cancel" method="POST" style="display: inline;">
-                    <button type="submit" class="btn btn-sm btn-danger">
-                        <svg style="width: 16px; height: 16px; margin-right: 6px;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-                        </svg>
-                        Cancel
-                    </button>
-                </form>
-            <?php endif; ?>
-            
-            <?php 
-            $canEdit = ($user['role_name'] === 'admin' || 
-                       ($payment['investor_id'] == $user['id'] && in_array($user['role_name'], ['admin', 'investor'])));
-            if ($canEdit): 
-            ?>
-            <a href="/payments/<?= $payment['id'] ?>/edit" class="btn btn-sm btn-primary">
-                <svg style="width: 16px; height: 16px; margin-right: 6px;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
-                </svg>
-                Edit
-            </a>
-            <?php endif; ?>
-            
-            <?php if ($user['role_name'] === 'admin'): ?>
-            <button onclick="deletePayment(<?= $payment['id'] ?>)" class="btn btn-sm btn-danger">
-                <svg style="width: 16px; height: 16px; margin-right: 6px;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
-                </svg>
-                Delete
-            </button>
-            <?php endif; ?>
-            
-            <a href="/payments" class="btn btn-sm btn-secondary">← Back to Payments</a>
-        </div>
+<div class="page-header" style="display: flex; justify-content: space-between; align-items: center;">
+    <div>
+        <h1 class="page-title">Payment Details</h1>
+        <p class="page-subtitle"><?= ucwords(str_replace('_', ' ', $payment['payment_type'])) ?> - $<?= number_format($payment['amount'], 2) ?></p>
+    </div>
+    <div style="display: flex; gap: 8px; align-items: center;">
+        <?php if ($payment['status'] === 'pending'): ?>
+            <form action="/payments/<?= $payment['id'] ?>/approve" method="POST" style="display: inline;">
+                <button type="submit" class="btn btn-sm btn-success">
+                    <svg style="width: 14px; height: 14px; margin-right: 4px;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                    </svg>
+                    Approve
+                </button>
+            </form>
+            <form action="/payments/<?= $payment['id'] ?>/cancel" method="POST" style="display: inline;">
+                <button type="submit" class="btn btn-sm btn-danger">
+                    <svg style="width: 14px; height: 14px; margin-right: 4px;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                    </svg>
+                    Cancel
+                </button>
+            </form>
+        <?php endif; ?>
+        
+        <?php 
+        $canEdit = ($user['role_name'] === 'admin' || 
+                   ($payment['investor_id'] == $user['id'] && in_array($user['role_name'], ['admin', 'investor'])));
+        if ($canEdit): 
+        ?>
+        <a href="/payments/<?= $payment['id'] ?>/edit" class="btn btn-sm btn-primary">
+            <svg style="width: 14px; height: 14px; margin-right: 4px;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
+            </svg>
+            Edit
+        </a>
+        <?php endif; ?>
+        
+        <?php if ($user['role_name'] === 'admin'): ?>
+        <button onclick="deletePayment(<?= $payment['id'] ?>)" class="btn btn-sm btn-danger">
+            <svg style="width: 14px; height: 14px; margin-right: 4px;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+            </svg>
+            Delete
+        </button>
+        <?php endif; ?>
+        
+        <a href="/payments" class="btn btn-sm btn-secondary">
+            <svg style="width: 14px; height: 14px; margin-right: 4px;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m0 7h18"></path>
+            </svg>
+            Back to Payments
+        </a>
     </div>
 </div>
 
@@ -141,8 +145,8 @@ if (isset($user) && $user['role_name'] === 'admin') {
             <h3>Description</h3>
         </div>
         <div class="card-content">
-            <div style="background: #f8f9fa; padding: 16px; border-radius: 6px; border: 1px solid #2a2a2a;">
-                <p style="margin: 0; white-space: pre-wrap; line-height: 1.6;"><?= htmlspecialchars($payment['description']) ?></p>
+            <div style="background: #ffffff; padding: 16px; border-radius: 6px; border: 1px solid #e5e5e5;">
+                <p style="margin: 0; white-space: pre-wrap; line-height: 1.6; color: #333333;"><?= htmlspecialchars($payment['description']) ?></p>
             </div>
         </div>
     </div>
@@ -171,8 +175,8 @@ if (isset($user) && $user['role_name'] === 'admin') {
             <h3>Additional Notes</h3>
         </div>
         <div class="card-content">
-            <div style="background: #f8f9fa; padding: 16px; border-radius: 6px; border: 1px solid #2a2a2a;">
-                <p style="margin: 0; white-space: pre-wrap; line-height: 1.6;"><?= htmlspecialchars($payment['notes']) ?></p>
+            <div style="background: #ffffff; padding: 16px; border-radius: 6px; border: 1px solid #e5e5e5;">
+                <p style="margin: 0; white-space: pre-wrap; line-height: 1.6; color: #333333;"><?= htmlspecialchars($payment['notes']) ?></p>
             </div>
         </div>
     </div>

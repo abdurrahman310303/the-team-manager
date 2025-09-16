@@ -1,0 +1,46 @@
+# Production configuration
+config/production.php
+
+# Local development
+.env
+.env.local
+
+# Database files
+*.sqlite
+database.db
+
+# Uploaded files
+uploads/*
+!uploads/.gitkeep
+!uploads/daily-reports/.gitkeep
+!uploads/receipts/.gitkeep
+
+# Logs
+*.log
+logs/
+
+# Temporary files
+*.tmp
+*.temp
+*.lock
+admin_created.lock
+
+# Setup files (should be deleted after use)
+setup_admin.php
+
+# Deployment
+deployment/
+
+# System files
+.DS_Store
+Thumbs.db
+
+# IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Backup files
+*.bak
+*.backup

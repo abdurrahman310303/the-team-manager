@@ -1,5 +1,5 @@
-CREATE DATABASE IF NOT EXISTS team_manager_core;
-USE team_manager_core;
+-- Team Manager Database Schema
+-- Import this file into your existing database via phpMyAdmin
 
 -- Roles table
 CREATE TABLE roles (

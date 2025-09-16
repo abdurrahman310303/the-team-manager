@@ -66,9 +66,27 @@ class Lead extends Model
         return $this->db->fetchAll($sql, [$userId]);
     }
 
+    public function getByAssignedOrCreatedBy($userId)
+    {
+        $sql = "SELECT l.*, u.name as assigned_name 
+                FROM leads l 
+                LEFT JOIN users u ON l.assigned_to = u.id 
+                WHERE l.assigned_to = ? OR l.created_by = ? 
+                ORDER BY l.created_at DESC";
+        return $this->db->fetchAll($sql, [$userId, $userId]);
+    }
+
     public function updateStatus($id, $status)
     {
         $sql = "UPDATE leads SET status = ? WHERE id = ?";
         return $this->db->query($sql, [$status, $id]);
+    }
+
+    public function create($data)
+    {
+        if (parent::create($data)) {
+            return $this->db->lastInsertId();
+        }
+        return false;
     }
 }

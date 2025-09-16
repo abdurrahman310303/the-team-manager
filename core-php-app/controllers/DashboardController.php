@@ -49,7 +49,8 @@ class DashboardController {
             case 'developer':
                 $userId = $user['id'];
                 $stats = [
-                    'total_projects' => $db->fetch("SELECT COUNT(*) as count FROM projects")['count'],
+                    'my_projects' => $db->fetch("SELECT COUNT(*) as count FROM projects p LEFT JOIN project_users pu ON p.id = pu.project_id WHERE pu.user_id = ? OR p.project_manager_id = ?", [$userId, $userId])['count'],
+                    'my_assigned_leads' => $db->fetch("SELECT COUNT(*) as count FROM leads WHERE assigned_to = ?", [$userId])['count'],
                     'my_reports_this_month' => $db->fetch("SELECT COUNT(*) as count FROM daily_reports WHERE user_id = ? AND DATE_FORMAT(report_date, '%Y-%m') = DATE_FORMAT(CURDATE(), '%Y-%m')", [$userId])['count'],
                     'total_hours_this_month' => $db->fetch("SELECT COALESCE(SUM(hours_worked), 0) as total FROM daily_reports WHERE user_id = ? AND DATE_FORMAT(report_date, '%Y-%m') = DATE_FORMAT(CURDATE(), '%Y-%m')", [$userId])['total'],
                     'pending_expenses' => $db->fetch("SELECT COUNT(*) as count FROM expenses WHERE added_by = ? AND status = 'pending'", [$userId])['count'],
@@ -67,11 +68,12 @@ class DashboardController {
                 break;
                 
             case 'investor':
+                $userId = $user['id'];
                 $stats = [
                     'total_projects' => $db->fetch("SELECT COUNT(*) as count FROM projects")['count'],
-                    'total_investment' => $db->fetch("SELECT COALESCE(SUM(budget), 0) as total FROM projects")['total'],
-                    'completed_payments' => $db->fetch("SELECT COALESCE(SUM(amount), 0) as total FROM payments WHERE status = 'completed'")['total'],
-                    'pending_payments' => $db->fetch("SELECT COALESCE(SUM(amount), 0) as total FROM payments WHERE status = 'pending'")['total'],
+                    'total_investment' => $this->paymentModel->getTotalByStatus('completed', $userId),
+                    'completed_payments' => $this->paymentModel->getTotalByStatus('completed', $userId),
+                    'pending_payments' => $this->paymentModel->getTotalByStatus('pending', $userId),
                 ];
                 break;
                 
@@ -98,8 +100,13 @@ class DashboardController {
                 break;
                 
             case 'developer':
-                $data['recent_projects'] = array_slice($this->projectModel->getAllWithRelations(), 0, 3);
+                $data['my_projects'] = array_slice($this->projectModel->getUserProjects($user['id']), 0, 3);
                 $data['my_recent_reports'] = array_slice($this->dailyReportModel->getByUserId($user['id']), 0, 5);
+                // Add assigned leads for developers
+                $assignedLeads = $this->leadModel->getByAssignedUser($user['id']);
+                if (!empty($assignedLeads)) {
+                    $data['my_assigned_leads'] = array_slice($assignedLeads, 0, 5);
+                }
                 break;
                 
             case 'bd':
@@ -109,7 +116,7 @@ class DashboardController {
                 
             case 'investor':
                 $data['recent_projects'] = array_slice($this->projectModel->getAllWithRelations(), 0, 5);
-                $data['recent_payments'] = array_slice($this->paymentModel->getAll(), 0, 5);
+                $data['recent_payments'] = array_slice($this->paymentModel->getByInvestorId($user['id']), 0, 5);
                 break;
                 
             default:

@@ -24,15 +24,15 @@ class LeadController
         $user = Auth::user();
         
         // Get leads based on role
-        if (Auth::hasRole('admin')) {
-            // Admin sees all leads
+        if (Auth::hasRole('admin') || Auth::hasRole('investor')) {
+            // Admin and investors see all leads
             $leads = $this->leadModel->getAllWithAssignedUser();
         } elseif (Auth::hasRole('bd')) {
-            // BD sees their own leads
+            // BD sees leads they created or are assigned to
+            $leads = $this->leadModel->getByAssignedOrCreatedBy($user['id']);
+        } elseif (Auth::hasRole('developer')) {
+            // Developers see leads they are assigned to
             $leads = $this->leadModel->getByAssignedUser($user['id']);
-        } elseif (Auth::hasRole('investor')) {
-            // Investors can see all leads (read-only)
-            $leads = $this->leadModel->getAllWithAssignedUser();
         } else {
             // Other roles can't access leads
             Session::flash('error', 'Access denied to leads section');
@@ -110,6 +110,7 @@ class LeadController
             'estimated_value' => !empty($_POST['estimated_value']) ? $_POST['estimated_value'] : null,
             'notes' => $_POST['notes'] ?? '',
             'assigned_to' => !empty($_POST['assigned_to']) ? $_POST['assigned_to'] : $user['id'],
+            'created_by' => $user['id'],
             'last_contact_date' => !empty($_POST['last_contact_date']) ? $_POST['last_contact_date'] : null,
         ];
 
@@ -150,8 +151,9 @@ class LeadController
         }
         
         // Check edit permissions
+        $user = Auth::user();
         if (!Auth::canEditLead($lead)) {
-            Session::flash('error', 'You can only edit your own leads');
+            Session::flash('error', 'You do not have permission to edit this lead.');
             header('Location: /leads/' . $id);
             exit;
         }

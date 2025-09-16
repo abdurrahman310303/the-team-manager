@@ -31,8 +31,11 @@ class PaymentController
             // Admin sees all payments
             $payments = $this->paymentModel->getAllWithRelations();
         } elseif (Auth::hasRole('investor')) {
-            // Investors see payments they've made or all payments for overview
-            $payments = $this->paymentModel->getAllWithRelations();
+            // Investors see payments they've made
+            $payments = $this->paymentModel->getPaymentsByInvestor($user['id']);
+        } else {
+            // Other roles should not see any payments
+            $payments = [];
         }
         
         $currentPage = 'payments';

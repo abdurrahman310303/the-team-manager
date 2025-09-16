@@ -58,7 +58,10 @@ class User extends Model {
     
     public function createUser($data) {
         $data['password'] = $this->hashPassword($data['password']);
-        return $this->create($data);
+        if ($this->create($data)) {
+            return $this->db->lastInsertId();
+        }
+        return false;
     }
     
     public function getUsersByRole($roleName) {

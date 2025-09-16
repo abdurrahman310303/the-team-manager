@@ -103,6 +103,19 @@ class Payment extends Model
         return $this->db->fetchAll($sql, [$recipientId]);
     }
 
+    public function getPaymentsByInvestor($investorId)
+    {
+        $sql = "SELECT p.*, 
+                       i.name as investor_name, 
+                       r.name as recipient_name 
+                FROM payments p 
+                LEFT JOIN users i ON p.investor_id = i.id 
+                LEFT JOIN users r ON p.recipient_id = r.id 
+                WHERE p.investor_id = ? 
+                ORDER BY p.payment_date DESC, p.created_at DESC";
+        return $this->db->fetchAll($sql, [$investorId]);
+    }
+
     public function getByStatus($status)
     {
         $sql = "SELECT p.*, 

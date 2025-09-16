@@ -5,9 +5,9 @@
 
 return [
     'host' => 'localhost',
-    'dbname' => 'team_manager_core',
-    'username' => 'root',
-    'password' => '',
+    'dbname' => 'minofqcm_the_team_manager',
+    'username' => 'minofqcm_team_manager',
+    'password' => 'Abdur_310303',
     'charset' => 'utf8mb4',
     'options' => [
         PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,

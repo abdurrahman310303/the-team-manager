@@ -768,13 +768,13 @@
                 </li>
                 <?php endif; ?>
                 
-                <?php if (Auth::hasAnyRole(['admin', 'investor'])): ?>
+                <?php if (Auth::hasAnyRole(['admin', 'investor', 'developer'])): ?>
                 <li class="nav-item">
                     <a href="/projects" class="nav-link <?= ($currentPage ?? '') === 'projects' ? 'active' : '' ?>">Projects</a>
                 </li>
                 <?php endif; ?>
                 
-                <?php if (Auth::hasAnyRole(['admin', 'bd', 'investor'])): ?>
+                <?php if (Auth::hasAnyRole(['admin', 'bd', 'investor', 'developer'])): ?>
                 <li class="nav-item">
                     <a href="/leads" class="nav-link <?= ($currentPage ?? '') === 'leads' ? 'active' : '' ?>">Leads</a>
                 </li>

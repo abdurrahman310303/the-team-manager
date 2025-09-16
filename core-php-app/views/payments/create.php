@@ -13,12 +13,19 @@ ob_start();
         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
             <div class="form-group">
                 <label for="investor_id" class="form-label">Investor (Payer) *</label>
-                <select name="investor_id" id="investor_id" required class="form-select">
-                    <option value="">Select investor</option>
-                    <?php foreach ($investors as $investor): ?>
-                        <option value="<?= $investor['id'] ?>"><?= htmlspecialchars($investor['name']) ?></option>
-                    <?php endforeach; ?>
-                </select>
+                <?php if (Auth::hasRole('investor')): 
+                    $currentUser = Auth::user();
+                ?>
+                    <input type="hidden" name="investor_id" value="<?= $currentUser['id'] ?>">
+                    <input type="text" value="<?= htmlspecialchars($currentUser['name']) ?>" class="form-input" readonly>
+                <?php else: ?>
+                    <select name="investor_id" id="investor_id" required class="form-select">
+                        <option value="">Select investor</option>
+                        <?php foreach ($investors as $investor): ?>
+                            <option value="<?= $investor['id'] ?>"><?= htmlspecialchars($investor['name']) ?></option>
+                        <?php endforeach; ?>
+                    </select>
+                <?php endif; ?>
             </div>
 
             <div class="form-group">

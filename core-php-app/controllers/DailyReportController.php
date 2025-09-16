@@ -30,9 +30,12 @@ class DailyReportController
         if (Auth::hasRole('admin')) {
             // Admin sees all reports
             $reports = $this->dailyReportModel->getAllWithUser();
-        } else {
-            // Others see only their own reports
+        } elseif (Auth::hasAnyRole(['developer', 'bd'])) {
+            // Developers and BDs see only their own reports
             $reports = $this->dailyReportModel->getByUserId($user['id']);
+        } else {
+            // Other roles (like investor) should not see any reports
+            $reports = [];
         }
         
         $currentPage = 'daily-reports';

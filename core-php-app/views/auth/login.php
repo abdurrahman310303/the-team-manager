@@ -71,21 +71,6 @@ ob_start();
     background: #2a2a2a;
 }
 
-.login-link {
-    text-align: center;
-    margin-top: 20px;
-}
-
-.login-link a {
-    color: #1a1a1a;
-    text-decoration: none;
-    font-size: 14px;
-}
-
-.login-link a:hover {
-    text-decoration: underline;
-}
-
 .error-message {
     background: #ffffff;
     color: #1a1a1a;
@@ -125,10 +110,6 @@ ob_start();
             <button type="submit" class="login-button">
                 Sign in
             </button>
-            
-            <div class="login-link">
-                <a href="/register">Don't have an account? Register here</a>
-            </div>
         </form>
     </div>
 </div>

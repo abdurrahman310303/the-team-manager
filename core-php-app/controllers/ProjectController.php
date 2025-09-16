@@ -77,7 +77,7 @@ class ProjectController {
     }
     
     public function create() {
-        Auth::requireAdmin();
+        Auth::requireAdminOrInvestor();
         
         $users = $this->userModel->getAll();
         

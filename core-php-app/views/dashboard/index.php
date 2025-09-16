@@ -57,8 +57,13 @@ ob_start();
         
     <?php elseif ($user['role_name'] === 'developer'): ?>
         <div class="stat-card">
-            <span class="stat-number"><?= $stats['total_projects'] ?></span>
-            <div class="stat-label">Active Projects</div>
+            <span class="stat-number"><?= $stats['my_projects'] ?></span>
+            <div class="stat-label">My Projects</div>
+        </div>
+        
+        <div class="stat-card">
+            <span class="stat-number"><?= $stats['my_assigned_leads'] ?></span>
+            <div class="stat-label">Assigned Leads</div>
         </div>
         
         <div class="stat-card">
@@ -166,6 +171,63 @@ ob_start();
     </div>
     <?php endif; ?>
 
+    <?php if ($user['role_name'] === 'developer' && !empty($dashboardData['my_projects'])): ?>
+    <div class="card">
+        <h3 class="card-title">My Projects</h3>
+        <div class="card-content">
+            <?php foreach ($dashboardData['my_projects'] as $project): ?>
+            <div style="display: flex; justify-content: space-between; align-items: center; padding: 12px 0; border-bottom: 1px solid #f5f5f5;">
+                <div>
+                    <div style="font-weight: 500; color: #1a1a1a;"><?= htmlspecialchars($project['name']) ?></div>
+                    <div style="font-size: 14px; color: #666666;"><?= htmlspecialchars($project['project_manager_name'] ?? 'No manager') ?></div>
+                </div>
+                <span class="badge <?php
+                switch($project['status']) {
+                    case 'planning': case 'in_progress': echo 'badge-pending'; break;
+                    case 'completed': echo 'badge-approved'; break;
+                    case 'on_hold': case 'cancelled': echo 'badge-rejected'; break;
+                }
+                ?>">
+                    <?= ucwords(str_replace('_', ' ', $project['status'])) ?>
+                </span>
+            </div>
+            <?php endforeach; ?>
+            <div style="margin-top: 15px;">
+                <a href="/projects" class="btn btn-sm">View all my projects →</a>
+            </div>
+        </div>
+    </div>
+    <?php endif; ?>
+
+    <?php if ($user['role_name'] === 'developer' && !empty($dashboardData['my_assigned_leads'])): ?>
+    <div class="card">
+        <h3 class="card-title">My Assigned Leads</h3>
+        <div class="card-content">
+            <?php foreach ($dashboardData['my_assigned_leads'] as $lead): ?>
+            <div style="display: flex; justify-content: space-between; align-items: center; padding: 12px 0; border-bottom: 1px solid #f5f5f5;">
+                <div>
+                    <div style="font-weight: 500; color: #1a1a1a;"><?= htmlspecialchars($lead['company_name']) ?></div>
+                    <div style="font-size: 14px; color: #666666;"><?= htmlspecialchars($lead['contact_person']) ?></div>
+                </div>
+                <span class="badge <?php
+                switch($lead['status']) {
+                    case 'new': case 'contacted': echo 'badge-pending'; break;
+                    case 'qualified': case 'proposal_sent': case 'closed_won': echo 'badge-approved'; break;
+                    case 'closed_lost': echo 'badge-rejected'; break;
+                    default: echo 'badge-pending';
+                }
+                ?>">
+                    <?= ucfirst(str_replace('_', ' ', $lead['status'])) ?>
+                </span>
+            </div>
+            <?php endforeach; ?>
+            <div style="margin-top: 15px;">
+                <a href="/leads" class="btn btn-sm">View all my leads →</a>
+            </div>
+        </div>
+    </div>
+    <?php endif; ?>
+
     <?php if (!empty($dashboardData['my_recent_reports'])): ?>
     <div class="card">
         <h3 class="card-title">My Recent Reports</h3>
@@ -222,7 +284,7 @@ ob_start();
             <?php foreach ($dashboardData['recent_payments'] as $payment): ?>
             <div style="display: flex; justify-content: space-between; align-items: center; padding: 12px 0; border-bottom: 1px solid #f5f5f5;">
                 <div>
-                    <div style="font-weight: 500; color: #1a1a1a;"><?= htmlspecialchars($payment['user_name'] ?? 'Unknown') ?></div>
+                    <div style="font-weight: 500; color: #1a1a1a;"><?= htmlspecialchars($payment['recipient_name'] ?? 'Unknown Recipient') ?></div>
                     <div style="font-size: 14px; color: #666666;">$<?= number_format($payment['amount'], 2) ?> - <?= ucfirst($payment['payment_type']) ?></div>
                 </div>
                 <span class="badge <?php

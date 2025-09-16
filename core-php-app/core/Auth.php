@@ -96,6 +96,13 @@ class Auth {
     }
     
     /**
+     * Admin or Investor access required
+     */
+    public static function requireAdminOrInvestor() {
+        self::requireAnyRole(['admin', 'investor'], 'Administrator or Investor access required.');
+    }
+    
+    /**
      * Non-investor access (everyone except investor)
      */
     public static function requireNonInvestor() {
@@ -187,8 +194,11 @@ class Auth {
         // Admin can view all
         if (self::hasRole('admin')) return true;
         
-        // BD can view their own leads
-        if (self::hasRole('bd') && $lead['assigned_to'] == $user['id']) return true;
+        // BD can view leads they created or are assigned to
+        if (self::hasRole('bd')) {
+            if (isset($lead['created_by']) && $lead['created_by'] == $user['id']) return true;
+            if ($lead['assigned_to'] == $user['id']) return true;
+        }
         
         // Investors can view all leads
         if (self::hasRole('investor')) return true;
@@ -205,8 +215,8 @@ class Auth {
         // Admin can edit all
         if (self::hasRole('admin')) return true;
         
-        // BD can edit their own leads
-        if (self::hasRole('bd') && $lead['assigned_to'] == $user['id']) return true;
+        // BD can edit leads they created
+        if (self::hasRole('bd') && isset($lead['created_by']) && $lead['created_by'] == $user['id']) return true;
         
         return false;
     }
